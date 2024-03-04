@@ -9,10 +9,6 @@ import com.driver.services.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public class ParkingLotServiceImpl implements ParkingLotService {
     @Autowired
@@ -50,22 +46,17 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public void deleteSpot(int spotId) {
-         Optional<Spot> spotOptional=spotRepository1.findById(spotId);
-         if(spotOptional.isEmpty())
-         {
-             return;
-         }
-         Spot spot=spotOptional.get();
-         ParkingLot parkingLot=spot.getParkingLot();
-         List<Spot> spotList=parkingLot.getSpotList();
-         spotList.remove(spot);
-         parkingLot.setSpotList(spotList);
-         parkingLotRepository1.save(parkingLot);
-         spotRepository1.deleteById(spotId);
+        if(!spotRepository1.existsById(spotId)) return;
+
+        Spot spot= spotRepository1.findById(spotId).get();
+        ParkingLot parkingLot = spot.getParkingLot();
+        parkingLot.getSpotList().remove(spot);
+        spotRepository1.delete(spot);
     }
 
     @Override
     public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
+//        Spot spot = spotRepository1.findById(spotId).get();
         ParkingLot parkingLot= parkingLotRepository1.findById(parkingLotId).get();
         Spot spot = null;
         for(Spot spot1:parkingLot.getSpotList()){
@@ -79,15 +70,12 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         }
         return spot;
 
+
     }
+
 
     @Override
     public void deleteParkingLot(int parkingLotId) {
-        Optional<ParkingLot> parkingLotOptional=parkingLotRepository1.findById(parkingLotId);
-        if(parkingLotOptional.isEmpty())
-        {
-            return ;
-        }
         parkingLotRepository1.deleteById(parkingLotId);
     }
 }
