@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user=userRepository4.findById(userId);
         if(user.isEmpty())
         {
-           throw new RuntimeException("User doesn't exist");
+           return ;
         }
         userRepository4.deleteById(userId);
     }
