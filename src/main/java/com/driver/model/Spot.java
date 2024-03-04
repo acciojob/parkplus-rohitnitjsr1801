@@ -17,6 +17,7 @@ public class Spot {
     private ParkingLot parkingLot;
 
     @OneToMany(mappedBy = "spot",cascade = CascadeType.ALL)
+    @JsonIgnore
     List<Reservation> reservationList;
 
     SpotType spotType;
