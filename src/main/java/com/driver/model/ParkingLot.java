@@ -15,7 +15,6 @@ public class ParkingLot {
     private String address;
 
     @OneToMany(mappedBy = "parkingLot",cascade = CascadeType.ALL)
-    @JsonIgnore
     List<Spot> spotList;
 
     public int getId() {

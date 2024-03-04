@@ -11,13 +11,11 @@ public class Spot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn
     private ParkingLot parkingLot;
 
     @OneToMany(mappedBy = "spot",cascade = CascadeType.ALL)
-    @JsonIgnore
     List<Reservation> reservationList;
 
     SpotType spotType;

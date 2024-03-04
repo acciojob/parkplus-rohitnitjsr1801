@@ -11,7 +11,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     List<Reservation> reservationList;
 
