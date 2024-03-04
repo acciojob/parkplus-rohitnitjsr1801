@@ -21,7 +21,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     SpotRepository spotRepository1;
     @Override
     public ParkingLot addParkingLot(String name, String address) {
-        ParkingLot parkingLot=new ParkingLot();
+        ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName(name);
         parkingLot.setAddress(address);
         parkingLotRepository1.save(parkingLot);
@@ -30,31 +30,21 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) {
-        Spot spot=new Spot();
-        Optional<ParkingLot> parkingLot=parkingLotRepository1.findById(parkingLotId);
-        if(parkingLot.isEmpty())
-        {
-            throw new RuntimeException("ParkingLot Id Invalid");
-        }
-        ParkingLot parkingLot1=parkingLot.get();
-        List<Spot> spotList=parkingLot1.getSpotList();
+        ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
+
+        Spot spot = new Spot();
+        spot.setParkingLot(parkingLot);
         spot.setPricePerHour(pricePerHour);
-        if(numberOfWheels<=2)
-        {
-            spot.setSpotType(SpotType.TWO_WHEELER);
-        }
-        else if(numberOfWheels>2&&numberOfWheels<=4)
-        {
-            spot.setSpotType(SpotType.FOUR_WHEELER);
-        }
-        else{
-            spot.setSpotType(SpotType.OTHERS);
-        }
         spot.setOccupied(false);
-        spotList.add(spot);
-        parkingLot1.setSpotList(spotList);
-        spot.setParkingLot(parkingLot1);
-        parkingLotRepository1.save(parkingLot1);
+
+        if(numberOfWheels <=2) spot.setSpotType(SpotType.TWO_WHEELER);
+        else if(numberOfWheels <=4) spot.setSpotType(SpotType.FOUR_WHEELER);
+        else if (numberOfWheels > 4) spot.setSpotType(SpotType.OTHERS);
+
+        parkingLot.getSpotList().add(spot);
+//        spotRepository1.save(spot);
+        parkingLotRepository1.save(parkingLot);
+
         return spot;
     }
 
