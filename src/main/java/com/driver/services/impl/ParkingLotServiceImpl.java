@@ -13,33 +13,37 @@ import org.springframework.stereotype.Service;
 public class ParkingLotServiceImpl implements ParkingLotService {
     @Autowired
     ParkingLotRepository parkingLotRepository1;
+
     @Autowired
     SpotRepository spotRepository1;
+
     @Override
     public ParkingLot addParkingLot(String name, String address) {
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName(name);
         parkingLot.setAddress(address);
-//        System.out.println(name+" "+address);
-        ParkingLot p1=parkingLotRepository1.save(parkingLot);
-        return p1;
+
+        return parkingLotRepository1.save(parkingLot);
     }
 
     @Override
     public Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) {
+        Spot spot = new Spot();
+
+        if (numberOfWheels <= 2)
+            spot.setSpotType(SpotType.TWO_WHEELER);
+        else if (numberOfWheels <= 4)
+            spot.setSpotType(SpotType.FOUR_WHEELER);
+        else
+            spot.setSpotType(SpotType.OTHERS);
+
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
 
-        Spot spot = new Spot();
-        spot.setParkingLot(parkingLot);
         spot.setPricePerHour(pricePerHour);
-        spot.setOccupied(false);
-
-        if(numberOfWheels <=2) spot.setSpotType(SpotType.TWO_WHEELER);
-        else if(numberOfWheels <=4) spot.setSpotType(SpotType.FOUR_WHEELER);
-        else if (numberOfWheels > 4) spot.setSpotType(SpotType.OTHERS);
+        spot.setParkingLot(parkingLot);
 
         parkingLot.getSpotList().add(spot);
-//        spotRepository1.save(spot);
+
         parkingLotRepository1.save(parkingLot);
 
         return spot;
@@ -47,33 +51,25 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public void deleteSpot(int spotId) {
-        if(!spotRepository1.existsById(spotId)) return;
-
-        Spot spot= spotRepository1.findById(spotId).get();
-        ParkingLot parkingLot = spot.getParkingLot();
-        parkingLot.getSpotList().remove(spot);
-        spotRepository1.delete(spot);
+        spotRepository1.deleteById(spotId);
     }
 
     @Override
     public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
-//        Spot spot = spotRepository1.findById(spotId).get();
-        ParkingLot parkingLot= parkingLotRepository1.findById(parkingLotId).get();
+        ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
+
         Spot spot = null;
-        for(Spot spot1:parkingLot.getSpotList()){
-            if(spot1.getId() == spotId){
-                spot1.setPricePerHour(pricePerHour);
-                spot = spot1;
-                spotRepository1.save(spot1);
+
+        for (Spot sp : parkingLot.getSpotList())
+            if (sp.getId() == spotId) {
+                sp.setPricePerHour(pricePerHour);
+                spot = sp;
+                spotRepository1.save(spot);
                 break;
-
             }
-        }
+
         return spot;
-
-
     }
-
 
     @Override
     public void deleteParkingLot(int parkingLotId) {
