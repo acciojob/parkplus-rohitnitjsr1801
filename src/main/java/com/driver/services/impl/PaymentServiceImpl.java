@@ -23,9 +23,14 @@ public class PaymentServiceImpl implements PaymentService {
         {
             throw new RuntimeException("Reservation ID invalid");
         }
-        if(!mode.equals("CARD")&&!mode.equals("UPI")&&!mode.equals("CASH"))
-        {
-            throw new RuntimeException("Payment mode not detected");
+        PaymentMode paymentMode = null;
+        if (mode.toUpperCase().equals(PaymentMode.CASH.toString())) paymentMode = PaymentMode.CASH;
+        else if (mode.toUpperCase().equals(PaymentMode.CARD.toString())) {
+            paymentMode = PaymentMode.CARD;
+        } else if (mode.toUpperCase().equals(PaymentMode.UPI.toString())) {
+            paymentMode = PaymentMode.UPI;
+        }else {
+            throw new Exception("Payment mode not detected");
         }
         Reservation reservation=r1.get();
         Spot spot=reservation.getSpot();
@@ -37,18 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         Payment payment=new Payment();
         payment.setPaymentCompleted(true);
-        if(mode.equals("CARD"))
-        {
-            payment.setPaymentMode(PaymentMode.CARD);
-        }
-        else if(mode.equals("UPI"))
-        {
-            payment.setPaymentMode(PaymentMode.UPI);
-        }
-        else{
-            payment.setPaymentMode(PaymentMode.CASH);
-        }
-
+        payment.setPaymentMode(paymentMode);
         payment.setReservation(reservation);
         paymentRepository2.save(payment);
         reservation.setPayment(payment);
