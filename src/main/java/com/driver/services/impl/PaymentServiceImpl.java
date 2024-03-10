@@ -41,6 +41,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new RuntimeException("Insufficient Amount");
         }
         Payment payment=new Payment();
+
         payment.setPaymentCompleted(true);
         payment.setPaymentMode(paymentMode);
         payment.setReservation(reservation);

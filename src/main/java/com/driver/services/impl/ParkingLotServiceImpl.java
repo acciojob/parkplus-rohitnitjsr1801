@@ -24,6 +24,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         ParkingLot parkingLot=new ParkingLot();
         parkingLot.setName(name);
         parkingLot.setAddress(address);
+        parkingLot.setSpotList(new ArrayList<>());
         parkingLotRepository1.save(parkingLot);
         return parkingLot;
     }
