@@ -1,52 +1,39 @@
 package com.driver.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reservation")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn
+    private User user;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn
+    private Spot spot;
+
+    @OneToOne(mappedBy = "reservation",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Payment payment;
 
     private int numberOfHours;
 
-    @JoinColumn
-    @ManyToOne
-    private User user;
-
-    @JoinColumn
-    @ManyToOne
-    private Spot spot;
-
-    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private Payment payment;
-
-    public Reservation(Integer id, int numberOfHours, int bill, User user, Spot spot, Payment payment) {
-        this.id = id;
-        this.numberOfHours = numberOfHours;
-        this.user = user;
-        this.spot = spot;
-        this.payment = payment;
-    }
-
-    public Reservation() {
-    }
-
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
-    }
-
-    public int getNumberOfHours() {
-        return numberOfHours;
-    }
-
-    public void setNumberOfHours(int numberOfHours) {
-        this.numberOfHours = numberOfHours;
     }
 
     public User getUser() {
@@ -71,5 +58,13 @@ public class Reservation {
 
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+
+    public int getNumberOfHours() {
+        return numberOfHours;
+    }
+
+    public void setNumberOfHours(int numberOfHours) {
+        this.numberOfHours = numberOfHours;
     }
 }
